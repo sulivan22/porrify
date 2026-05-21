@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 import { syncCompetitionData } from "@/lib/competition-sync";
 import { getUserRoleByEmail } from "@/lib/repositories";
 const payloadSchema = z.object({
-  competitionKey: z.enum(["world-cup", "champions-league", "la-liga", "premier-league", "formula-1"])
+  competitionKey: z.enum(["world-cup"])
 });
 
 export async function POST(request: Request) {

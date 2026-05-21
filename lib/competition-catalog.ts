@@ -97,12 +97,27 @@ async function fetchCompetitionCatalogItem(competitionKey: CompetitionKey): Prom
       };
     }
 
-    const [league, events] = await Promise.all([
+    const [league, leagueTeams, events] = await Promise.all([
       fetchLeagueDetails(competitionKey),
+      fetchLeagueTeams(competitionKey),
       fetchCompetitionSeasonEvents(competitionKey)
     ]);
 
     const teamMap = new Map<string, Team>();
+    for (const team of leagueTeams) {
+      if (!team.idTeam || !team.strTeam) {
+        continue;
+      }
+
+      teamMap.set(team.idTeam, {
+        code: team.idTeam,
+        name: team.strTeam,
+        image: team.strBadge ?? undefined,
+        region: option.label,
+        competitionKey
+      });
+    }
+
     for (const event of events) {
       if (event.idHomeTeam && event.strHomeTeam) {
         teamMap.set(event.idHomeTeam, {

@@ -16,7 +16,7 @@ import { getCompetitionCatalogItem } from "@/lib/competition-catalog";
 import { getStripe } from "@/lib/stripe";
 
 const pickSchema = z.object({
-  rank: z.number().min(1).max(11),
+  rank: z.number().min(1).max(15),
   teamCode: z.string().min(2)
 });
 
@@ -25,9 +25,9 @@ const payloadSchema = z.object({
   displayName: z.string().min(2),
   porraSlug: z.string().min(3),
   porraName: z.string().optional(),
-  competitionKey: z.enum(["world-cup", "champions-league", "la-liga", "premier-league", "formula-1"]),
+  competitionKey: z.enum(["world-cup"]),
   stripeSessionId: z.string().min(3),
-  picks: z.array(pickSchema).min(10).max(11)
+  picks: z.array(pickSchema).min(15).max(15)
 });
 
 export async function POST(request: Request) {

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { syncCompetitionData } from "@/lib/competition-sync";
 import { CompetitionKey } from "@/lib/types";
 
-const competitions: CompetitionKey[] = ["formula-1", "world-cup", "champions-league", "la-liga", "premier-league"];
+const competitions: CompetitionKey[] = ["world-cup"];
 
 function isAuthorized(request: Request) {
   const secret = process.env.CRON_SECRET;

@@ -7,7 +7,7 @@ import { getStripe } from "@/lib/stripe";
 const payloadSchema = z.object({
   mode: z.enum(["create", "join"]),
   porraSlug: z.string().optional(),
-  competitionKey: z.enum(["world-cup", "champions-league", "la-liga", "premier-league", "formula-1"]).optional(),
+  competitionKey: z.enum(["world-cup"]).optional(),
   amountCents: z.number().int().min(100).max(1000000).optional()
 });
 
@@ -52,7 +52,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No puedes unirte a una porra que has creado." }, { status: 400 });
     }
     amountTotal = porra.entryFeeCents;
-    competitionKey = porra.competitionKey;
+    if (porra.competitionKey !== "world-cup") {
+      return NextResponse.json({ error: "Solo está habilitado el Mundial en este momento." }, { status: 400 });
+    }
+    competitionKey = "world-cup";
   }
 
   if (!competitionKey) {

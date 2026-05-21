@@ -21,13 +21,7 @@ export default async function NewPorraPage({
   const competitionKey = params.competition;
   const hasReturnedFromCheckout = Boolean(params.session_id);
 
-  if (
-    competitionKey !== "world-cup" &&
-    competitionKey !== "champions-league" &&
-    competitionKey !== "la-liga" &&
-    competitionKey !== "premier-league" &&
-    competitionKey !== "formula-1"
-  ) {
+  if (competitionKey !== "world-cup") {
     return <CompetitionPicker basePath="/porras/new" title="¿Para qué competición quieres crear la porra?" />;
   }
 

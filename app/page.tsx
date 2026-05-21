@@ -5,9 +5,9 @@ import { getCompetitionCatalog } from "@/lib/competition-catalog";
 
 export default async function HomePage() {
   const competitions = await getCompetitionCatalog();
-  const championsCompetition = competitions.find((competition) => competition.key === "champions-league");
+  const worldCupCompetition = competitions.find((competition) => competition.key === "world-cup");
   const highlightImages =
-    championsCompetition?.teams
+    worldCupCompetition?.teams
       .map((team) => team.image)
       .filter((image): image is string => Boolean(image))
       .slice(0, 8) ?? [];
@@ -19,8 +19,8 @@ export default async function HomePage() {
           <p className="eyebrow">Porra privada de competiciones deportivas</p>
           <h1>Porras entre amigos, compañeros y familia.</h1>
           <p className="hero-copy">
-            Porrify es una porra privada donde cada participante paga, selecciona sus equipos o pilotos y compite en
-            ranking real con datos oficiales.
+            Porrify es una porra privada del Mundial donde cada participante paga, selecciona sus países y compite en
+            un ranking real con datos oficiales.
           </p>
           <div className="cta-row">
             <Link href="/signin" className="primary-button">
@@ -83,13 +83,13 @@ export default async function HomePage() {
 
       <section className="card">
         <span className="eyebrow">Sistema de puntuación</span>
-        <h2>Fútbol y Formula 1</h2>
+        <h2>Mundial 2026</h2>
         <LandingScoringTabs />
       </section>
 
       <section className="card">
-        <span className="eyebrow">Competiciones disponibles</span>
-        <h2>Ligas y torneos activos</h2>
+        <span className="eyebrow">Competición disponible</span>
+        <h2>Torneo activo</h2>
         <div className="competition-grid">
           {competitions.map((competition) => (
             <article className="competition-card competition-card-left" key={competition.key}>

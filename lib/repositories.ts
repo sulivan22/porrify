@@ -154,6 +154,7 @@ function createEmptyProgressBaseline(competitionKey: CompetitionKey, teamCode: s
     losses: 0,
     goalsFor: 0,
     goalsAgainst: 0,
+    reachedRoundOf32: false,
     reachedRoundOf16: false,
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
@@ -626,7 +627,7 @@ type FormulaOneEventPoints = {
   driverPoints: Map<string, number>;
 };
 
-type FootballStage = "round16" | "quarter" | "semi" | "final" | "third-place" | null;
+type FootballStage = "round32" | "round16" | "quarter" | "semi" | "final" | "third-place" | null;
 
 async function buildFormulaOneEventPoints(events: SportsDbEvent[]) {
   const raceEvents = sortByDateAsc(events).filter((event) => isFormulaOneRaceEvent(event) && Boolean(event.idEvent));
@@ -696,6 +697,9 @@ function getFootballStageLabel(event: SportsDbEvent): FootballStage {
   if (/(round of 16|last 16|round-of-16|octavos)/.test(source)) {
     return "round16";
   }
+  if (/(round of 32|last 32|round-of-32|16avos|dieciseisavos)/.test(source)) {
+    return "round32";
+  }
   if (/\bfinal\b/.test(source)) {
     return "final";
   }
@@ -705,12 +709,14 @@ function getFootballStageLabel(event: SportsDbEvent): FootballStage {
 
 function getFootballStageBonus(stage: FootballStage) {
   switch (stage) {
+    case "round32":
+      return { label: "Pasa a 16avos", points: 10 };
     case "round16":
-      return { label: "Pasa a octavos", points: 5 };
+      return { label: "Pasa a octavos", points: 15 };
     case "quarter":
-      return { label: "Pasa a cuartos", points: 15 };
+      return { label: "Pasa a cuartos", points: 20 };
     case "semi":
-      return { label: "Pasa a semifinales", points: 30 };
+      return { label: "Pasa a semifinales", points: 40 };
     case "final":
       return { label: "Pasa a la final", points: 50 };
     default:
@@ -899,9 +905,10 @@ function getBonusesForTeam(
   baseline: TeamProgress = createEmptyProgressBaseline(progress.competitionKey, progress.teamCode)
 ) {
   return [
-    progress.reachedRoundOf16 && !baseline.reachedRoundOf16 ? { label: "Pasa a octavos", points: 5 } : null,
-    progress.reachedQuarterFinal && !baseline.reachedQuarterFinal ? { label: "Pasa a cuartos", points: 15 } : null,
-    progress.reachedSemiFinal && !baseline.reachedSemiFinal ? { label: "Pasa a semifinales", points: 30 } : null,
+    progress.reachedRoundOf32 && !baseline.reachedRoundOf32 ? { label: "Pasa a 16avos", points: 10 } : null,
+    progress.reachedRoundOf16 && !baseline.reachedRoundOf16 ? { label: "Pasa a octavos", points: 15 } : null,
+    progress.reachedQuarterFinal && !baseline.reachedQuarterFinal ? { label: "Pasa a cuartos", points: 20 } : null,
+    progress.reachedSemiFinal && !baseline.reachedSemiFinal ? { label: "Pasa a semifinales", points: 40 } : null,
     progress.reachedFinal && !baseline.reachedFinal ? { label: "Pasa a la final", points: 50 } : null,
     progress.wonThirdPlace && !baseline.wonThirdPlace ? { label: "Gana el 3er puesto", points: 15 } : null,
     progress.wonWorldCup && !baseline.wonWorldCup ? { label: "Gana el torneo", points: 100 } : null

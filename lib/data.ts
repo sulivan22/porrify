@@ -114,44 +114,12 @@ export const formulaOneDrivers: Team[] = [
 
 export const competitionOptions: CompetitionOption[] = [
   {
-    key: "formula-1",
-    label: "Formula 1",
-    subtitle: "Temporada 2026",
-    description: "Elige 11 pilotos, uno por escudería, y puntúa según resultados de cada Grand Prix.",
-    teamLabel: "pilotos",
-    pickCount: 11
-  },
-  {
     key: "world-cup",
     label: "Mundial 2026",
     subtitle: "Torneo final a partir del 11 de junio de 2026",
     description: "Mantén el formato original por países para dejar la porra preparada.",
     teamLabel: "países",
-    pickCount: 10
-  },
-  {
-    key: "champions-league",
-    label: "Champions League",
-    subtitle: "UEFA Champions League 2025-2026 en curso",
-    description: "Compite con los clubes de la Champions usando resultados oficiales de cada jornada.",
-    teamLabel: "clubes",
-    pickCount: 10
-  },
-  {
-    key: "la-liga",
-    label: "La Liga",
-    subtitle: "Temporada 2025-2026 en juego",
-    description: "Usa partidos reales ya disputados para probar el ranking y la sincronización.",
-    teamLabel: "clubes",
-    pickCount: 10
-  },
-  {
-    key: "premier-league",
-    label: "Premier League",
-    subtitle: "English Premier League 2025-2026 en curso",
-    description: "Nueva competición para jugar la porra con resultados oficiales de Inglaterra.",
-    teamLabel: "clubes",
-    pickCount: 10
+    pickCount: 15
   }
 ];
 
@@ -172,6 +140,7 @@ export const demoProgress: TeamProgress[] = [
     losses: 0,
     goalsFor: 9,
     goalsAgainst: 2,
+    reachedRoundOf32: true,
     reachedRoundOf16: true,
     reachedQuarterFinal: true,
     reachedSemiFinal: false,
@@ -187,6 +156,7 @@ export const demoProgress: TeamProgress[] = [
     losses: 0,
     goalsFor: 11,
     goalsAgainst: 3,
+    reachedRoundOf32: true,
     reachedRoundOf16: true,
     reachedQuarterFinal: true,
     reachedSemiFinal: true,
@@ -202,6 +172,7 @@ export const demoProgress: TeamProgress[] = [
     losses: 1,
     goalsFor: 8,
     goalsAgainst: 4,
+    reachedRoundOf32: true,
     reachedRoundOf16: true,
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
@@ -217,6 +188,7 @@ export const demoProgress: TeamProgress[] = [
     losses: 3,
     goalsFor: 54,
     goalsAgainst: 21,
+    reachedRoundOf32: false,
     reachedRoundOf16: false,
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
@@ -232,6 +204,7 @@ export const demoProgress: TeamProgress[] = [
     losses: 2,
     goalsFor: 61,
     goalsAgainst: 28,
+    reachedRoundOf32: false,
     reachedRoundOf16: false,
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
@@ -247,6 +220,7 @@ export const demoProgress: TeamProgress[] = [
     losses: 0,
     goalsFor: 0,
     goalsAgainst: 0,
+    reachedRoundOf32: false,
     reachedRoundOf16: false,
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
@@ -268,5 +242,5 @@ export function getTeamsForCompetition(competitionKey: CompetitionKey) {
 }
 
 export function getCompetitionOption(competitionKey: CompetitionKey) {
-  return competitionOptions.find((option) => option.key === competitionKey)!;
+  return competitionOptions.find((option) => option.key === competitionKey) ?? competitionOptions[0];
 }

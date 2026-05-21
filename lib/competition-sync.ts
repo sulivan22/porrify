@@ -18,6 +18,7 @@ function createEmptyProgress(competitionKey: CompetitionKey, teamCode: string): 
     losses: 0,
     goalsFor: 0,
     goalsAgainst: 0,
+    reachedRoundOf32: false,
     reachedRoundOf16: false,
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
@@ -60,6 +61,10 @@ function getStageLabel(event: SportsDbEvent) {
     return "round16" as const;
   }
 
+  if (/(round of 32|last 32|round-of-32|16avos|dieciseisavos)/.test(source)) {
+    return "round32" as const;
+  }
+
   if (/\bfinal\b/.test(source)) {
     return "final" as const;
   }
@@ -68,6 +73,10 @@ function getStageLabel(event: SportsDbEvent) {
 }
 
 function markStage(progress: TeamProgress, stage: ReturnType<typeof getStageLabel>) {
+  if (stage === "round32") {
+    progress.reachedRoundOf32 = true;
+  }
+
   if (stage === "round16") {
     progress.reachedRoundOf16 = true;
   }
@@ -294,7 +303,7 @@ export async function syncCompetitionData(competitionKey: CompetitionKey) {
     trackedTeams: teamProgress.filter((item) =>
       competitionKey === "formula-1"
         ? (item.baseScore ?? 0) > 0
-        : item.wins || item.draws || item.losses || item.reachedRoundOf16
+        : item.wins || item.draws || item.losses || item.reachedRoundOf32 || item.reachedRoundOf16
     ).length
   };
 }

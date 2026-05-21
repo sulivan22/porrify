@@ -11,9 +11,10 @@ export function getBaseTeamScore(progress: TeamProgress, competitionKey: Competi
     progress.losses * 0 +
     progress.goalsFor * 1 +
     progress.goalsAgainst * -0.5 +
-    (progress.reachedRoundOf16 ? 5 : 0) +
-    (progress.reachedQuarterFinal ? 15 : 0) +
-    (progress.reachedSemiFinal ? 30 : 0) +
+    (progress.reachedRoundOf32 ? 10 : 0) +
+    (progress.reachedRoundOf16 ? 15 : 0) +
+    (progress.reachedQuarterFinal ? 20 : 0) +
+    (progress.reachedSemiFinal ? 40 : 0) +
     (progress.reachedFinal ? 50 : 0) +
     (progress.wonThirdPlace ? 15 : 0) +
     (progress.wonWorldCup ? 100 : 0)
@@ -25,7 +26,7 @@ export function getRankMultiplier(rank: number, competitionKey: CompetitionKey) 
     return Math.max(12 - rank, 1);
   }
 
-  return Math.max(11 - rank, 1);
+  return Math.max(16 - rank, 1);
 }
 
 export function getWeightedPickScore(
@@ -69,6 +70,7 @@ export function getProgressDelta(
     losses: toNumberDelta(current.losses, baseline.losses),
     goalsFor: toNumberDelta(current.goalsFor, baseline.goalsFor),
     goalsAgainst: toNumberDelta(current.goalsAgainst, baseline.goalsAgainst),
+    reachedRoundOf32: toStageDelta(current.reachedRoundOf32, baseline.reachedRoundOf32),
     reachedRoundOf16: toStageDelta(current.reachedRoundOf16, baseline.reachedRoundOf16),
     reachedQuarterFinal: toStageDelta(current.reachedQuarterFinal, baseline.reachedQuarterFinal),
     reachedSemiFinal: toStageDelta(current.reachedSemiFinal, baseline.reachedSemiFinal),

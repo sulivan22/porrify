@@ -28,6 +28,7 @@ export type TeamProgress = {
   losses: number;
   goalsFor: number;
   goalsAgainst: number;
+  reachedRoundOf32: boolean;
   reachedRoundOf16: boolean;
   reachedQuarterFinal: boolean;
   reachedSemiFinal: boolean;
