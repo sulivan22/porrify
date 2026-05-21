@@ -67,7 +67,17 @@ Copia el `whsec_...` que devuelve Stripe en `STRIPE_WEBHOOK_SECRET`.
 
 ## Sincronización de datos
 
-De momento la sincronización se ejecuta de forma manual desde el panel `/admin`, usando los botones de sync por competición.
+La app incluye endpoint programado en `/api/cron/sync`.
+
+1. Define `CRON_SECRET` en Vercel (Environment Variables).
+2. El cron está configurado en `vercel.json` para ejecutarse cada día en UTC:
+   - `0 6 * * *`
+   - `0 12 * * *`
+   - `0 21 * * *`
+3. Estos horarios equivalen actualmente (Europa/Madrid en horario de verano) a:
+   - `08:00`, `14:00` y `23:00`.
+
+También puedes lanzar sync manual desde `/admin`.
 
 ## Colecciones MongoDB
 
