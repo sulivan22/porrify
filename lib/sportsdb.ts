@@ -63,7 +63,7 @@ export const competitionApiConfig: Record<
 > = {
   "world-cup": {
     leagueId: "4429",
-    season: "2025-2026",
+    season: "2026",
     seasonStart: "2026-06-11",
     seasonEnd: "2026-07-19",
     leagueName: "FIFA World Cup"
