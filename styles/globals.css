@@ -411,6 +411,15 @@ img {
   display: none;
 }
 
+.selection-button {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+.selection-button:hover {
+  background: #f2f4f7;
+}
+
 .my-selection-content {
   margin-top: 10px;
   padding: 14px;
@@ -434,6 +443,16 @@ img {
   border-radius: 10px;
   border: 1px solid var(--line);
   background: #fff;
+}
+
+.my-selection-row .score-line-team {
+  flex: 1;
+}
+
+.selection-multiplier {
+  color: var(--muted);
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .landing-anchor-bar {

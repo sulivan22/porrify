@@ -35,6 +35,24 @@ export default async function EntryRankingDetailPage({
           <Link href={`/porras/${breakdown.porraSlug}`} className="ghost-button">
             Volver al ranking
           </Link>
+          <details className="my-selection-panel">
+            <summary className="ghost-button selection-button">Equipos</summary>
+            <div className="my-selection-content">
+              <strong>Selección de {breakdown.displayName}</strong>
+              <div className="my-selection-list">
+                {breakdown.selections.map((selection) => (
+                  <div className="my-selection-row" key={`${selection.rank}-${selection.team.code}`}>
+                    <span className="rank-pill">#{selection.rank}</span>
+                    <span className="score-line-team">
+                      <TeamAvatar team={selection.team} />
+                      <span>{selection.team.name}</span>
+                    </span>
+                    <span className="selection-multiplier">x{selection.multiplier}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </details>
         </div>
       </section>
 

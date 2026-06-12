@@ -55,7 +55,7 @@ export default async function PorraDetailPage({ params }: { params: Promise<{ sl
             <div className="detail-actions">
               {userSelection.length > 0 ? (
                 <details className="my-selection-panel">
-                  <summary className="ghost-button">Tu selección</summary>
+                  <summary className="ghost-button selection-button">Tu selección</summary>
                   <div className="my-selection-content">
                     <strong>Orden de tu selección</strong>
                     <div className="my-selection-list">

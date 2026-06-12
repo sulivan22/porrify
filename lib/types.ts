@@ -149,6 +149,11 @@ export type EntryScoreBreakdown = {
   userId: string;
   displayName: string;
   totalScore: number;
+  selections: Array<{
+    rank: number;
+    multiplier: number;
+    team: Team;
+  }>;
   matches: MatchScoreBreakdown[];
   bonuses: BonusScoreBreakdown[];
 };

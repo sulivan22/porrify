@@ -952,6 +952,21 @@ export async function getEntryScoreBreakdown(
     const baselineMap = new Map((entry.progressBaseline ?? []).map((item) => [item.teamCode, item]));
     const joinedAtTimestamp = Date.parse(entry.joinedAt ?? "");
     const hasJoinTimestamp = Number.isFinite(joinedAtTimestamp);
+    const selections = entry.picks
+      .slice()
+      .sort((a, b) => a.rank - b.rank)
+      .map((pick) => ({
+        rank: pick.rank,
+        multiplier: getRankMultiplier(pick.rank, porra.competitionKey),
+        team:
+          teamMap.get(pick.teamCode) ??
+          ({
+            code: pick.teamCode,
+            name: pick.teamCode,
+            region: getCompetitionLabel(porra.competitionKey),
+            competitionKey: porra.competitionKey
+          } satisfies Team)
+      }));
 
     if (porra.competitionKey === "formula-1") {
       const raceEvents = sortByDateAsc(events).filter((event) => {
@@ -1046,6 +1061,7 @@ export async function getEntryScoreBreakdown(
         userId: entry.userId,
         displayName: entry.displayName,
         totalScore: bonuses.reduce((sum, bonus) => sum + bonus.weightedPoints, 0),
+        selections,
         matches: [],
         bonuses
       } satisfies EntryScoreBreakdown;
@@ -1130,6 +1146,7 @@ export async function getEntryScoreBreakdown(
       userId: entry.userId,
       displayName: entry.displayName,
       totalScore,
+      selections,
       matches,
       bonuses
     } satisfies EntryScoreBreakdown;
