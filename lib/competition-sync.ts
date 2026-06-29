@@ -8,6 +8,7 @@ import {
 } from "@/lib/repositories";
 import { competitionApiConfig, fetchCompetitionSeasonEvents, fetchEventResults, SportsDbEvent } from "@/lib/sportsdb";
 import { CompetitionKey, TeamProgress } from "@/lib/types";
+import { getWorldCupStageByDate } from "@/lib/world-cup-stage";
 
 function createEmptyProgress(competitionKey: CompetitionKey, teamCode: string): TeamProgress {
   return {
@@ -23,6 +24,7 @@ function createEmptyProgress(competitionKey: CompetitionKey, teamCode: string): 
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
     reachedFinal: false,
+    wonRunnerUp: false,
     wonThirdPlace: false,
     wonWorldCup: false,
     baseScore: 0
@@ -69,7 +71,7 @@ function getStageLabel(event: SportsDbEvent) {
     return "final" as const;
   }
 
-  return null;
+  return getWorldCupStageByDate(event.dateEvent);
 }
 
 function markStage(progress: TeamProgress, stage: ReturnType<typeof getStageLabel>) {
@@ -123,12 +125,14 @@ function applyStageWinner(
   }
 
   const winner = homeScore > awayScore ? homeProgress : awayProgress;
+  const loser = homeScore > awayScore ? awayProgress : homeProgress;
 
   if (stage === "third-place") {
     winner.wonThirdPlace = true;
   }
 
   if (stage === "final") {
+    loser.wonRunnerUp = true;
     winner.wonWorldCup = true;
   }
 }

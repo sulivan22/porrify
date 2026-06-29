@@ -33,6 +33,7 @@ export type TeamProgress = {
   reachedQuarterFinal: boolean;
   reachedSemiFinal: boolean;
   reachedFinal: boolean;
+  wonRunnerUp: boolean;
   wonThirdPlace: boolean;
   wonWorldCup: boolean;
   baseScore?: number;

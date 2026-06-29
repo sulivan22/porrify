@@ -455,6 +455,16 @@ img {
   white-space: nowrap;
 }
 
+.score-rules-list {
+  display: grid;
+  gap: 8px;
+}
+
+.score-rules-list p {
+  margin: 0;
+  color: var(--muted);
+}
+
 .landing-anchor-bar {
   display: flex;
   gap: 10px;

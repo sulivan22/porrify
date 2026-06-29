@@ -16,6 +16,7 @@ export function getBaseTeamScore(progress: TeamProgress, competitionKey: Competi
     (progress.reachedQuarterFinal ? 20 : 0) +
     (progress.reachedSemiFinal ? 40 : 0) +
     (progress.reachedFinal ? 50 : 0) +
+    (progress.wonRunnerUp ? 50 : 0) +
     (progress.wonThirdPlace ? 15 : 0) +
     (progress.wonWorldCup ? 100 : 0)
   );
@@ -75,6 +76,7 @@ export function getProgressDelta(
     reachedQuarterFinal: toStageDelta(current.reachedQuarterFinal, baseline.reachedQuarterFinal),
     reachedSemiFinal: toStageDelta(current.reachedSemiFinal, baseline.reachedSemiFinal),
     reachedFinal: toStageDelta(current.reachedFinal, baseline.reachedFinal),
+    wonRunnerUp: toStageDelta(current.wonRunnerUp, baseline.wonRunnerUp),
     wonThirdPlace: toStageDelta(current.wonThirdPlace, baseline.wonThirdPlace),
     wonWorldCup: toStageDelta(current.wonWorldCup, baseline.wonWorldCup),
     baseScore: toNumberDelta(current.baseScore, baseline.baseScore)

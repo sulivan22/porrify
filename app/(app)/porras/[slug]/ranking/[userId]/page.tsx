@@ -53,6 +53,17 @@ export default async function EntryRankingDetailPage({
               </div>
             </div>
           </details>
+          <details className="my-selection-panel">
+            <summary className="ghost-button selection-button">Sistema de puntos</summary>
+            <div className="my-selection-content">
+              <strong>Reglas de puntuacion</strong>
+              <div className="score-rules-list">
+                <p>Seleccionas 15 paises y cada puesto multiplica sus puntos: del #1 x15 al #15 x1.</p>
+                <p>Partido ganado +3, empate +1, derrota 0. Cada gol a favor +1 y cada gol en contra -0.5.</p>
+                <p>Bonos: 16avos +10, octavos +15, cuartos +20, semifinales +40, final +50, subcampeon +50, 3er puesto +15 y campeon +100.</p>
+              </div>
+            </div>
+          </details>
         </div>
       </section>
 

@@ -145,6 +145,7 @@ export const demoProgress: TeamProgress[] = [
     reachedQuarterFinal: true,
     reachedSemiFinal: false,
     reachedFinal: false,
+    wonRunnerUp: false,
     wonThirdPlace: false,
     wonWorldCup: false
   },
@@ -161,6 +162,7 @@ export const demoProgress: TeamProgress[] = [
     reachedQuarterFinal: true,
     reachedSemiFinal: true,
     reachedFinal: false,
+    wonRunnerUp: false,
     wonThirdPlace: false,
     wonWorldCup: false
   },
@@ -177,6 +179,7 @@ export const demoProgress: TeamProgress[] = [
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
     reachedFinal: false,
+    wonRunnerUp: false,
     wonThirdPlace: false,
     wonWorldCup: false
   },
@@ -193,6 +196,7 @@ export const demoProgress: TeamProgress[] = [
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
     reachedFinal: false,
+    wonRunnerUp: false,
     wonThirdPlace: false,
     wonWorldCup: false
   },
@@ -209,6 +213,7 @@ export const demoProgress: TeamProgress[] = [
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
     reachedFinal: false,
+    wonRunnerUp: false,
     wonThirdPlace: false,
     wonWorldCup: false
   },
@@ -225,6 +230,7 @@ export const demoProgress: TeamProgress[] = [
     reachedQuarterFinal: false,
     reachedSemiFinal: false,
     reachedFinal: false,
+    wonRunnerUp: false,
     wonThirdPlace: false,
     wonWorldCup: false,
     baseScore: 125
