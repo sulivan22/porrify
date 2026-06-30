@@ -4,7 +4,7 @@ import { getCompetitionCatalogItem } from "@/lib/competition-catalog";
 import { demoProgress, getCompetitionOption, getTeamsForCompetition } from "@/lib/data";
 import { getDb } from "@/lib/mongodb";
 import { getProgressDelta, getRankMultiplier, getWeightedPickScore } from "@/lib/scoring";
-import { fetchEventResults, getResolvedEventScores, SportsDbEvent } from "@/lib/sportsdb";
+import { fetchEventResults, SportsDbEvent } from "@/lib/sportsdb";
 import { getWorldCupStageByDate } from "@/lib/world-cup-stage";
 import {
   BonusScoreBreakdown,
@@ -547,6 +547,15 @@ function materializeLeaderboard(
     }));
 }
 
+function toScore(value?: string | null) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 function isFormulaOneRaceEvent(event: SportsDbEvent) {
   const source = `${event.strEvent ?? ""} ${event.strFilename ?? ""}`.toLowerCase();
 
@@ -739,9 +748,10 @@ function buildFootballBonusesFromEvents(input: {
 
     const homeCode = event.idHomeTeam ?? null;
     const awayCode = event.idAwayTeam ?? null;
-    const resolvedScores = getResolvedEventScores(event);
+    const homeScore = toScore(event.intHomeScore);
+    const awayScore = toScore(event.intAwayScore);
 
-    if (!homeCode || !awayCode || !resolvedScores) {
+    if (!homeCode || !awayCode || homeScore === null || awayScore === null) {
       continue;
     }
 
@@ -778,11 +788,11 @@ function buildFootballBonusesFromEvents(input: {
       }
     }
 
-    if (resolvedScores.homeScore === resolvedScores.awayScore) {
+    if (homeScore === awayScore) {
       continue;
     }
 
-    const winnerCode = resolvedScores.homeScore > resolvedScores.awayScore ? homeCode : awayCode;
+    const winnerCode = homeScore > awayScore ? homeCode : awayCode;
     const winnerPick = pickMap.get(winnerCode);
     if (!winnerPick) {
       continue;
@@ -810,7 +820,7 @@ function buildFootballBonusesFromEvents(input: {
     }
 
     if (stage === "final") {
-      const runnerUpCode = resolvedScores.homeScore > resolvedScores.awayScore ? awayCode : homeCode;
+      const runnerUpCode = homeScore > awayScore ? awayCode : homeCode;
       const runnerUpPick = pickMap.get(runnerUpCode);
       if (runnerUpPick) {
         const runnerUpKey = `${runnerUpCode}:runner-up`;
@@ -879,15 +889,16 @@ function calculateFootballEntryTotal(input: {
 
     const homeCode = event.idHomeTeam ?? null;
     const awayCode = event.idAwayTeam ?? null;
-    const resolvedScores = getResolvedEventScores(event);
+    const homeScore = toScore(event.intHomeScore);
+    const awayScore = toScore(event.intAwayScore);
 
-    if (!homeCode || !awayCode || !resolvedScores) {
+    if (!homeCode || !awayCode || homeScore === null || awayScore === null) {
       return sum;
     }
 
     const sides = [
-      { teamCode: homeCode, goalsFor: resolvedScores.homeScore, goalsAgainst: resolvedScores.awayScore },
-      { teamCode: awayCode, goalsFor: resolvedScores.awayScore, goalsAgainst: resolvedScores.homeScore }
+      { teamCode: homeCode, goalsFor: homeScore, goalsAgainst: awayScore },
+      { teamCode: awayCode, goalsFor: awayScore, goalsAgainst: homeScore }
     ] as const;
 
     let current = sum;
@@ -1101,15 +1112,16 @@ export async function getEntryScoreBreakdown(
 
       const homeCode = event.idHomeTeam ?? null;
       const awayCode = event.idAwayTeam ?? null;
-      const resolvedScores = getResolvedEventScores(event);
+      const homeScore = toScore(event.intHomeScore);
+      const awayScore = toScore(event.intAwayScore);
 
-      if (!homeCode || !awayCode || !resolvedScores) {
+      if (!homeCode || !awayCode || homeScore === null || awayScore === null) {
         continue;
       }
 
       const sides = [
-        { teamCode: homeCode, opponentCode: awayCode, goalsFor: resolvedScores.homeScore, goalsAgainst: resolvedScores.awayScore },
-        { teamCode: awayCode, opponentCode: homeCode, goalsFor: resolvedScores.awayScore, goalsAgainst: resolvedScores.homeScore }
+        { teamCode: homeCode, opponentCode: awayCode, goalsFor: homeScore, goalsAgainst: awayScore },
+        { teamCode: awayCode, opponentCode: homeCode, goalsFor: awayScore, goalsAgainst: homeScore }
       ] as const;
 
       for (const side of sides) {

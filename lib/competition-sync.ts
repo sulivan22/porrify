@@ -6,14 +6,7 @@ import {
   replaceTeamProgress,
   updateAllEntryScores
 } from "@/lib/repositories";
-import {
-  competitionApiConfig,
-  fetchEventById,
-  fetchCompetitionSeasonEvents,
-  fetchEventResults,
-  getResolvedEventScores,
-  SportsDbEvent
-} from "@/lib/sportsdb";
+import { competitionApiConfig, fetchCompetitionSeasonEvents, fetchEventResults, SportsDbEvent } from "@/lib/sportsdb";
 import { CompetitionKey, TeamProgress } from "@/lib/types";
 import { getWorldCupStageByDate } from "@/lib/world-cup-stage";
 
@@ -40,6 +33,15 @@ function createEmptyProgress(competitionKey: CompetitionKey, teamCode: string): 
 
 function getProgressMap(competitionKey: CompetitionKey, teamCodes: string[]) {
   return new Map(teamCodes.map((teamCode) => [teamCode, createEmptyProgress(competitionKey, teamCode)]));
+}
+
+function toScore(value?: string | null) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 function getStageLabel(event: SportsDbEvent) {
@@ -173,15 +175,16 @@ function materializeProgress(competitionKey: CompetitionKey, events: SportsDbEve
     markStage(homeProgress, stage);
     markStage(awayProgress, stage);
 
-    const resolvedScores = getResolvedEventScores(event);
+    const homeScore = toScore(event.intHomeScore);
+    const awayScore = toScore(event.intAwayScore);
 
-    if (!resolvedScores) {
+    if (homeScore === null || awayScore === null) {
       continue;
     }
 
-    applyResult(homeProgress, resolvedScores.homeScore, resolvedScores.awayScore);
-    applyResult(awayProgress, resolvedScores.awayScore, resolvedScores.homeScore);
-    applyStageWinner(stage, homeProgress, awayProgress, resolvedScores.homeScore, resolvedScores.awayScore);
+    applyResult(homeProgress, homeScore, awayScore);
+    applyResult(awayProgress, awayScore, homeScore);
+    applyStageWinner(stage, homeProgress, awayProgress, homeScore, awayScore);
   }
 
   return Array.from(progressMap.values());
@@ -280,24 +283,8 @@ async function materializeFormulaOneProgress(events: SportsDbEvent[], driverCode
   return Array.from(progressMap.values());
 }
 
-async function enrichPenaltyShootoutEvents(events: SportsDbEvent[]) {
-  const enriched = await Promise.all(
-    events.map(async (event) => {
-      if (event.strStatus !== "PEN" || !event.idEvent) {
-        return event;
-      }
-
-      const detailedEvent = await fetchEventById(event.idEvent).catch(() => null);
-      return detailedEvent ? { ...event, ...detailedEvent } : event;
-    })
-  );
-
-  return enriched;
-}
-
 export async function syncCompetitionData(competitionKey: CompetitionKey) {
-  const scheduledEvents = await fetchCompetitionSeasonEvents(competitionKey);
-  const events = competitionKey === "formula-1" ? scheduledEvents : await enrichPenaltyShootoutEvents(scheduledEvents);
+  const events = await fetchCompetitionSeasonEvents(competitionKey);
   const competition = await getCompetitionCatalogItem(competitionKey);
   const teamCodes = competition.teams.map((team) => team.code);
 
