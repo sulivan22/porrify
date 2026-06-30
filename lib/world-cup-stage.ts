@@ -5,7 +5,7 @@ export function getWorldCupStageByDate(dateEvent?: string | null): WorldCupKnock
     return null;
   }
 
-  if (dateEvent >= "2026-06-28" && dateEvent <= "2026-07-04") {
+  if (dateEvent >= "2026-06-29" && dateEvent <= "2026-07-04") {
     return "round32";
   }
 
