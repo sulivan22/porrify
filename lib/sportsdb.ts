@@ -19,6 +19,8 @@ export type SportsDbEvent = {
   strAwayTeamBadge?: string | null;
   intHomeScore?: string | null;
   intAwayScore?: string | null;
+  intHomeScoreExtra?: string | null;
+  intAwayScoreExtra?: string | null;
   strStatus?: string | null;
 };
 
@@ -123,6 +125,39 @@ async function fetchSportsDb<T>(path: string) {
   return (await response.json()) as SportsDbResponse<T>;
 }
 
+function toNumericScore(value?: string | null) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function getResolvedEventScores(event: Pick<
+  SportsDbEvent,
+  "intHomeScore" | "intAwayScore" | "intHomeScoreExtra" | "intAwayScoreExtra" | "strStatus"
+>) {
+  const homeScore = toNumericScore(event.intHomeScore);
+  const awayScore = toNumericScore(event.intAwayScore);
+
+  if (homeScore === null || awayScore === null) {
+    return null;
+  }
+
+  if (event.strStatus !== "PEN") {
+    return { homeScore, awayScore };
+  }
+
+  const homeExtra = toNumericScore(event.intHomeScoreExtra) ?? 0;
+  const awayExtra = toNumericScore(event.intAwayScoreExtra) ?? 0;
+
+  return {
+    homeScore: homeScore + homeExtra,
+    awayScore: awayScore + awayExtra
+  };
+}
+
 export async function fetchCompetitionSeasonEvents(competitionKey: CompetitionKey) {
   const config = competitionApiConfig[competitionKey];
   const payload = await fetchSportsDb<SportsDbEvent>(`/schedule/league/${config.leagueId}/${config.season}`);
@@ -157,4 +192,9 @@ export async function fetchTeamPlayers(teamId: string) {
 export async function fetchEventResults(eventId: string) {
   const payload = await fetchSportsDb<SportsDbEventResult>(`/lookup/event_results/${eventId}`);
   return payload.lookup ?? [];
+}
+
+export async function fetchEventById(eventId: string) {
+  const payload = await fetchSportsDb<SportsDbEvent>(`/lookup/event/${eventId}`);
+  return payload.lookup?.[0] ?? null;
 }
