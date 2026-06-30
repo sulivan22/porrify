@@ -19,7 +19,10 @@ export type SportsDbEvent = {
   strAwayTeamBadge?: string | null;
   intHomeScore?: string | null;
   intAwayScore?: string | null;
+  intHomeScoreExtra?: string | null;
+  intAwayScoreExtra?: string | null;
   strStatus?: string | null;
+  strResult?: string | null;
 };
 
 export type SportsDbTeam = {
@@ -157,4 +160,9 @@ export async function fetchTeamPlayers(teamId: string) {
 export async function fetchEventResults(eventId: string) {
   const payload = await fetchSportsDb<SportsDbEventResult>(`/lookup/event_results/${eventId}`);
   return payload.lookup ?? [];
+}
+
+export async function fetchEventById(eventId: string) {
+  const payload = await fetchSportsDb<SportsDbEvent>(`/lookup/event/${eventId}`);
+  return payload.lookup?.[0] ?? null;
 }

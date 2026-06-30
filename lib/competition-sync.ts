@@ -6,7 +6,13 @@ import {
   replaceTeamProgress,
   updateAllEntryScores
 } from "@/lib/repositories";
-import { competitionApiConfig, fetchCompetitionSeasonEvents, fetchEventResults, SportsDbEvent } from "@/lib/sportsdb";
+import {
+  competitionApiConfig,
+  fetchCompetitionSeasonEvents,
+  fetchEventById,
+  fetchEventResults,
+  SportsDbEvent
+} from "@/lib/sportsdb";
 import { CompetitionKey, TeamProgress } from "@/lib/types";
 import { getWorldCupStageByDate } from "@/lib/world-cup-stage";
 
@@ -118,14 +124,31 @@ function applyStageWinner(
   homeProgress: TeamProgress,
   awayProgress: TeamProgress,
   homeScore: number,
-  awayScore: number
+  awayScore: number,
+  event?: SportsDbEvent
 ) {
-  if (homeScore === awayScore) {
-    return;
+  let winner: TeamProgress | null = null;
+  let loser: TeamProgress | null = null;
+
+  if (homeScore > awayScore) {
+    winner = homeProgress;
+    loser = awayProgress;
+  } else if (homeScore < awayScore) {
+    winner = awayProgress;
+    loser = homeProgress;
+  } else {
+    const homeExtra = toScore(event?.intHomeScoreExtra);
+    const awayExtra = toScore(event?.intAwayScoreExtra);
+
+    if (homeExtra !== null && awayExtra !== null && homeExtra !== awayExtra) {
+      winner = homeExtra > awayExtra ? homeProgress : awayProgress;
+      loser = homeExtra > awayExtra ? awayProgress : homeProgress;
+    }
   }
 
-  const winner = homeScore > awayScore ? homeProgress : awayProgress;
-  const loser = homeScore > awayScore ? awayProgress : homeProgress;
+  if (!winner || !loser) {
+    return;
+  }
 
   if (stage === "round32") {
     winner.reachedRoundOf16 = true;
@@ -151,6 +174,19 @@ function applyStageWinner(
     loser.wonRunnerUp = true;
     winner.wonWorldCup = true;
   }
+}
+
+async function enrichPenaltyEvents(events: SportsDbEvent[]) {
+  return Promise.all(
+    events.map(async (event) => {
+      if (!event.idEvent || !["PEN", "AP"].includes(event.strStatus ?? "")) {
+        return event;
+      }
+
+      const lookupEvent = await fetchEventById(event.idEvent).catch(() => null);
+      return lookupEvent ? { ...event, ...lookupEvent } : event;
+    })
+  );
 }
 
 function materializeProgress(competitionKey: CompetitionKey, events: SportsDbEvent[], teamCodes: string[]) {
@@ -184,7 +220,7 @@ function materializeProgress(competitionKey: CompetitionKey, events: SportsDbEve
 
     applyResult(homeProgress, homeScore, awayScore);
     applyResult(awayProgress, awayScore, homeScore);
-    applyStageWinner(stage, homeProgress, awayProgress, homeScore, awayScore);
+    applyStageWinner(stage, homeProgress, awayProgress, homeScore, awayScore, event);
   }
 
   return Array.from(progressMap.values());
@@ -284,7 +320,9 @@ async function materializeFormulaOneProgress(events: SportsDbEvent[], driverCode
 }
 
 export async function syncCompetitionData(competitionKey: CompetitionKey) {
-  const events = await fetchCompetitionSeasonEvents(competitionKey);
+  const scheduledEvents = await fetchCompetitionSeasonEvents(competitionKey);
+  const events =
+    competitionKey === "world-cup" ? await enrichPenaltyEvents(scheduledEvents) : scheduledEvents;
   const competition = await getCompetitionCatalogItem(competitionKey);
   const teamCodes = competition.teams.map((team) => team.code);
 
