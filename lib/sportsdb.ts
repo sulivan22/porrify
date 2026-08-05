@@ -73,9 +73,9 @@ export const competitionApiConfig: Record<
   },
   "la-liga": {
     leagueId: "4335",
-    season: "2025-2026",
-    seasonStart: "2025-08-15",
-    seasonEnd: "2026-05-24",
+    season: "2026-2027",
+    seasonStart: "2026-08-01",
+    seasonEnd: "2027-06-01",
     leagueName: "Spanish La Liga"
   },
   "champions-league": {

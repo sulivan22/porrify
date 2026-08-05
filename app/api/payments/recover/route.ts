@@ -6,7 +6,7 @@ import { getRecoverablePaymentByUserAndCompetition } from "@/lib/repositories";
 
 const querySchema = z.object({
   mode: z.enum(["create", "join"]),
-  competitionKey: z.enum(["world-cup"]),
+  competitionKey: z.enum(["world-cup", "la-liga"]),
   porraSlug: z.string().optional()
 });
 

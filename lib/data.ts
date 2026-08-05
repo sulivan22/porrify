@@ -120,6 +120,14 @@ export const competitionOptions: CompetitionOption[] = [
     description: "Mantén el formato original por países para dejar la porra preparada.",
     teamLabel: "países",
     pickCount: 15
+  },
+  {
+    key: "la-liga",
+    label: "La Liga 2026-2027",
+    subtitle: "Temporada española 2026-2027",
+    description: "Elige y ordena tus equipos para competir durante toda la temporada.",
+    teamLabel: "equipos",
+    pickCount: 10
   }
 ];
 

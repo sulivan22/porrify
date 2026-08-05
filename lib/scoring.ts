@@ -1,3 +1,4 @@
+import { getCompetitionOption } from "@/lib/data";
 import { CompetitionKey, Pick, TeamProgress } from "@/lib/types";
 
 export function getBaseTeamScore(progress: TeamProgress, competitionKey: CompetitionKey) {
@@ -27,7 +28,7 @@ export function getRankMultiplier(rank: number, competitionKey: CompetitionKey) 
     return Math.max(12 - rank, 1);
   }
 
-  return Math.max(16 - rank, 1);
+  return Math.max(getCompetitionOption(competitionKey).pickCount + 1 - rank, 1);
 }
 
 export function getWeightedPickScore(

@@ -18,6 +18,7 @@ export default async function EntryRankingDetailPage({
   }
 
   const isFormulaOne = breakdown.competitionKey === "formula-1";
+  const isLaLiga = breakdown.competitionKey === "la-liga";
   const hideBonuses =
     breakdown.competitionKey === "la-liga" || breakdown.competitionKey === "premier-league";
   const showMatches = !isFormulaOne;
@@ -58,9 +59,19 @@ export default async function EntryRankingDetailPage({
             <div className="my-selection-content">
               <strong>Reglas de puntuacion</strong>
               <div className="score-rules-list">
-                <p>Seleccionas 15 paises y cada puesto multiplica sus puntos: del #1 x15 al #15 x1.</p>
-                <p>Partido ganado +3, empate +1, derrota 0. Cada gol a favor +1 y cada gol en contra -0.5.</p>
-                <p>Bonos: 16avos +10, octavos +15, cuartos +20, semifinales +40, final +50, subcampeon +50, 3er puesto +15 y campeon +100.</p>
+                {isLaLiga ? (
+                  <>
+                    <p>Seleccionas 10 equipos y cada puesto multiplica sus puntos: del #1 x10 al #10 x1.</p>
+                    <p>Partido ganado +3, empate +1, derrota 0. Cada gol a favor +1 y cada gol en contra -0.5.</p>
+                    <p>En La Liga no hay bonos por fases. Los puntos empiezan a contar desde que el usuario crea o se une a la porra.</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Seleccionas 15 paises y cada puesto multiplica sus puntos: del #1 x15 al #15 x1.</p>
+                    <p>Partido ganado +3, empate +1, derrota 0. Cada gol a favor +1 y cada gol en contra -0.5.</p>
+                    <p>Bonos: 16avos +10, octavos +15, cuartos +20, semifinales +40, final +50, subcampeon +50, 3er puesto +15 y campeon +100.</p>
+                  </>
+                )}
               </div>
             </div>
           </details>

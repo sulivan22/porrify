@@ -25,9 +25,9 @@ const payloadSchema = z.object({
   displayName: z.string().min(2),
   porraSlug: z.string().min(3),
   porraName: z.string().optional(),
-  competitionKey: z.enum(["world-cup"]),
+  competitionKey: z.enum(["world-cup", "la-liga"]),
   stripeSessionId: z.string().min(3),
-  picks: z.array(pickSchema).min(15).max(15)
+  picks: z.array(pickSchema).min(1).max(15)
 });
 
 export async function POST(request: Request) {

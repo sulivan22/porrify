@@ -83,7 +83,7 @@ export default async function HomePage() {
 
       <section className="card">
         <span className="eyebrow">Sistema de puntuación</span>
-        <h2>Mundial 2026</h2>
+        <h2>Fútbol</h2>
         <LandingScoringTabs />
       </section>
 
